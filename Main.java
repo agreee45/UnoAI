@@ -55,8 +55,7 @@ public class Main implements ConnectionListener {
 	private void gamePlayLoop(Protocol protocol, Connection connection) throws Exception{
 		//convertToMap
 		connection.SendPacket(new Packet(protocol, "RequestGameState", new Object[]{}));
-		Thread.currentThread().sleep(1000);
-
+		Thread.sleep(1000);
 		String state = (String) this.packet.Data.get("State");
 		Byte b = (Byte) (this.packet.Data.get("Width"));
 		int width = Integer.parseInt(b.toString());
@@ -208,7 +207,7 @@ public class Main implements ConnectionListener {
 		public void sendMove(Connection connection, Protocol protocol, State state) throws Exception{
 			String string = "";
 			for(int z = 0 ; z < state.getPlayers().size(); z++){
-				Coordinate temp1 = state.getPlayers().get(z).getLocation();
+				Coordinate temp1 = state.getPlayers().get(z).getCurrentLocation();
 				Coordinate temp2 = state.getPlayers().get(z).getNextLocation();
 				if(!temp1.equals(temp2)){
 					string = string + temp1.getX() + "x" + temp1.getY() + "-" + temp2.getX() + "x" + temp2.getY();

@@ -16,17 +16,9 @@ public class State {
 		this.map = info.getMap();
 		this.goal = new Goal(info.getFlags(), info.getBase());
 		this.players = info.getPlayers();
-		this.enemyPlayers = info.getEnemyPlayers();
+		this.setEnemyPlayers(info.getEnemyPlayers());
 	}
-	private ArrayList<Player> initiatePlayers(ArrayList<Player> temp)
-	{
-		this.players = new ArrayList<Player>();
-		for(int i = 0; i < temp.size() ; i++){
-			this.players.add(new Player(temp.get(i).getLocation(), map.size()));
-			this.players.get(i).setNextMove(temp.get(i).getLocation());
-		}
-		return players;
-	}
+	
 	public int getHeight(){
 		return this.height;
 	}
@@ -41,6 +33,13 @@ public class State {
 	}
 	public ArrayList<ArrayList<Space>> getMap(){
 		return this.map;
+	}
+	public void setEnemyPlayers(ArrayList<Player> enemyPlayers) {
+		this.enemyPlayers = enemyPlayers;
+	}
+
+	public ArrayList<Player> getEnemyPlayers() {
+		return enemyPlayers;
 	}
 }
 
