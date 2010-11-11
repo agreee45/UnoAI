@@ -25,28 +25,33 @@ public class ConvertToMap {
 			this.map.add(new ArrayList<Space>());
 		}
 		findPOI(map);
-		printOutMap(this.map);
+		printOutMap(this.map, 0);
+		while(true){
+
+		}
 	}
 	public void findPOI(String map){
 		int y = 0;
 		int x = 0;
+		String tempString = "";
 
 		for(int i = 0; i < map.length(); i++){
 			if(y == width)
 			{
 				y=0;
+				System.out.println(tempString);
+				tempString = "";
 				x++;
 			}
-			if(map.charAt(i) == 'X'){
+			tempString = tempString+ map.charAt(i);
+			if(map.charAt(i) == 'F'){
 				this.flags.add(new Space(new Coordinate(x, y),3, map.charAt(i)));
 				this.map.get(y).add(this.flags.get(this.flags.size()-1));
 			}
 			else if(map.charAt(i) == 'W'){
 				this.map.get(y).add(new Space(new Coordinate(x, y),1, map.charAt(i)));
 			}
-			else if(map.charAt(i) == '-'){
-				this.map.get(y).add(new Space(new Coordinate(x, y),0, map.charAt(i)));
-			}
+
 			//players
 			//with flags
 			else if(map.charAt(i) >64 && map.charAt(i) < 91){
@@ -79,7 +84,13 @@ public class ConvertToMap {
 				this.base = new Space(new Coordinate(x, y),2,map.charAt(i));
 				this.map.get(y).add(this.base);
 			}
+			else{
+				this.map.get(y).add(new Space(new Coordinate(x, y),0, map.charAt(i)));
+			}
 			y++;
+		}
+		for(int i = 0 ; i < 4 ; i++){
+			System.out.println("done");
 		}
 	}
 	public int getWidth(){
@@ -94,7 +105,7 @@ public class ConvertToMap {
 	public ArrayList<Player> getEnemyPlayers(){
 		return this.enemyPlayers;
 	}
-	
+
 	public ArrayList<Space> getFlags(){
 		return this.flags;
 	}
@@ -104,10 +115,13 @@ public class ConvertToMap {
 	public ArrayList<ArrayList<Space>> getMap(){
 		return this.map;
 	}
-	public void printOutMap(ArrayList<ArrayList<Space>> map){
+	public void printOutMap(ArrayList<ArrayList<Space>> map, int animationBar){
 		for(int i = 0; i < map.size(); i++){
 			for(int z = 0; z < map.get(i).size(); z++){
 				System.out.print(this.map.get(i).get(z).getString());
+				if(z == map.size() -1 && i == animationBar){
+					System.out.print("+++");
+				}
 			}
 			System.out.println();
 		}	

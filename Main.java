@@ -90,7 +90,7 @@ public class Main implements ConnectionListener {
 
 				if(loop1 == false){
 					//reprint our move
-					System.out.println("reprint");
+					map.printOutMap(map.getMap(), animationBarCounter);
 				}
 			}
 
@@ -131,7 +131,7 @@ public class Main implements ConnectionListener {
 			//create working data
 			State stateInfo = new State(map);
 			//reprint their move
-			System.out.println("reprint");
+			map.printOutMap(map.getMap(), animationBarCounter);
 			
 			//give the info to the decisions process
 			//State newState = nextMove(stateInfo);
@@ -142,37 +142,8 @@ public class Main implements ConnectionListener {
 		}
 	}
 
-		private void rePrint(int animationBarCounter, ArrayList<ArrayList<Space>> twoDArray){
-			//for loop for lines
-			//		for(int y = 0; y < height; y++)
-			//		{
-			//			//for loop for columns of the line
-			//			for(int x = 0; x < width; x++)
-			//			{
-			//				if(Wall){
-			//					System.out.println("W");
-			//				}
-			//				else if(Player)
-			//				{
-			//					String playerAlphabet = array.get(x,y);
-			//					System.out.println(playerAlphabet);
-			//				}
-			//				else if(emptySpace){
-			//					System.out.println("-");
-			//				}
-			//				else if(flag){
-			//					System.out.println("");
-			//				}
-			//
-			//
-			//			}
-			//			if(line == animationBarCounter){
-			//				System.out.println("-");
-			//			}
-			//			else{
-			//				System.out.println();
-			//			}
-			//		}
+		private void rePrint(int animationBarCounter, ConvertToMap map){
+			
 		}
 		public void PacketReceived(Packet packet) {
 			if(packet.Data.get("Type").equals("GameState")){

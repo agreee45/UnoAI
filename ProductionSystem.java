@@ -122,6 +122,8 @@ public class ProductionSystem {
 		//find the step
 		Coordinate coordinate = findNextStep(possibleMove, player);
 
+		
+		//deal with the found step
 		if(coordinate == null)
 		{
 			player.setHalted(true);
