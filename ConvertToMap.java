@@ -13,7 +13,8 @@ public class ConvertToMap {
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private ArrayList<Player> enemyPlayers = new ArrayList<Player>();
 	private Space base;
-	private ArrayList<Space> flags = new ArrayList<Space>();
+	private ArrayList<Space> targetFlags = new ArrayList<Space>();
+	private ArrayList<Space> defendFlags = new ArrayList<Space>();
 	private ArrayList<ArrayList<Space>> map = new ArrayList<ArrayList<Space>>();
 	private int width;
 	private int height;
@@ -45,8 +46,8 @@ public class ConvertToMap {
 			}
 			tempString = tempString+ map.charAt(i);
 			if(map.charAt(i) == 'F'){
-				this.flags.add(new Space(new Coordinate(x, y),3, map.charAt(i)));
-				this.map.get(y).add(this.flags.get(this.flags.size()-1));
+				this.targetFlags.add(new Space(new Coordinate(x, y),3, map.charAt(i)));
+				this.map.get(y).add(this.targetFlags.get(this.targetFlags.size()-1));
 			}
 			else if(map.charAt(i) == 'W'){
 				this.map.get(y).add(new Space(new Coordinate(x, y),1, map.charAt(i)));
@@ -106,8 +107,8 @@ public class ConvertToMap {
 		return this.enemyPlayers;
 	}
 
-	public ArrayList<Space> getFlags(){
-		return this.flags;
+	public ArrayList<Space> getTargetFlags(){
+		return this.targetFlags;
 	}
 	public Space getBase(){
 		return this.base;

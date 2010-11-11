@@ -26,125 +26,153 @@ public class Main implements ConnectionListener {
 		// Create a tournament game with the default seed of zero.
 		if(joinOrMakeGame == 0){
 			// Sign into the server with your team name and lock yourself into team "a".
-			connection.SendPacket(new Packet(protocol, "SignIn", new Object[]{"Team bla22"}));
+			connection.SendPacket(new Packet(protocol, "SignIn", new Object[]{"Guest11"}));
 			connection.SendPacket(new Packet(protocol, "SetConstantPlayer", new Object[]{}));
 
 			// Join "Team One"'s existing game.
 			connection.SendPacket(new Packet(protocol, "JoinGame", new Object[]{"Team One"}));
+			Thread.sleep(500);
+			gamePlayLoop(protocol, connection, true);
 		}
 		else{
 			// Sign into the server with your team name and lock yourself into team "a".
-			connection.SendPacket(new Packet(protocol, "SignIn", new Object[]{"Team Ybbb"}));
+			connection.SendPacket(new Packet(protocol, "SignIn", new Object[]{"Host11"}));
 			Thread.sleep(500);
 			connection.SendPacket(new Packet(protocol, "SetConstantPlayer", new Object[]{}));
 			Thread.sleep(500);
 			// Create a tournament game with the default seed of zero.
 			connection.SendPacket(new Packet(protocol, "CreateTournament", new Object[]{"0"}));
 			Thread.sleep(500);
+			gamePlayLoop(protocol, connection, false);
 
+			//loop until the other joins
+			boolean loop = true;
+			while(loop){
+				connection.SendPacket(new Packet(protocol, "ListPlayers", new Object[]{}));
+				Thread.sleep(2000);
+				
+				if(this.packet.Data.get("Type").equals("List")){
+					String list = (String) this.packet.Data.get("List");
+					if(list.contains(";"))
+						loop = false;
+					}
+				}
+			}
+
+
+
+			//start the game loop
+
+			//after game ends code terminates
+			while(true){
+
+			}
 		}
 
-		//start the game loop
-		gamePlayLoop(protocol, connection);
-		//after game ends code terminates
-		while(true){
-
-		}
-	}
-
-	private void gamePlayLoop(Protocol protocol, Connection connection) throws Exception{
-		//convertToMap
-		connection.SendPacket(new Packet(protocol, "RequestGameState", new Object[]{}));
-		Thread.sleep(1000);
-		String state = (String) this.packet.Data.get("State");
-		Byte b = (Byte) (this.packet.Data.get("Width"));
-		int width = Integer.parseInt(b.toString());
-		Byte c = (Byte) (this.packet.Data.get("Height"));
-		int height = Integer.parseInt(c.toString());
-
-		ConvertToMap map = new ConvertToMap(state, width, height);
-		int animationBarCounter = 0;
-
-		//print the map
-
-		//initiate game
-		String temp = JOptionPane.showInputDialog("start the game!");
-
-		boolean firstOnly = false;
-		while(true){
-			if(animationBarCounter == height){
-				animationBarCounter = 0;
-			}
-
-			//loop to wait until we get confirmation
-			boolean loop1 = true;
-			while(loop1 && firstOnly){
-				Thread.sleep(100);
-				if(this.packet.Data.get("Type").equals("Success"))
-					loop1 = false;
-				else if(this.packet.Data.get("Type").equals("Fail")){
-					System.out.println("Our move did not work");
-					System.out.println("Reason being:");
-					System.out.println(this.packet.Data.get("Reason"));
-				}
-
-				if(loop1 == false){
-					//reprint our move
-					map.printOutMap(map.getMap(), animationBarCounter);
-				}
-			}
-
-			firstOnly = true;
-
-			//loop until we get our turn
-			boolean loop=true;
-			while(loop)
-			{
-				Thread.sleep(500);
-				if(this.packet.Data.get("Type").equals("YourTurn"))
-					loop = false;
-				//when game over return and get out
-				else if(this.packet.Data.get("Type").equals("GameOver")){
-					String winner = (String) this.packet.Data.get("Winner");
-					System.out.println("winner is: " + winner);
-
-					//reprint their move
-					System.out.println("reprint");
-					String confirm = JOptionPane.showInputDialog("Do you agree with the outcome?");
-					return;
-				}
-			}
+		private void gamePlayLoop(Protocol protocol, Connection connection, boolean joinedOrNot) throws Exception{
 			//convertToMap
-			state = (String) this.packet.Data.get("State");
-			b = (Byte) (this.packet.Data.get("Width"));
-			width = Integer.parseInt(b.toString());
-			c = (Byte) (this.packet.Data.get("Height"));
-			height = Integer.parseInt(c.toString());
-			map = new ConvertToMap(state, width, height);
-			
-			//request game score and display later
-			connection.SendPacket(new Packet(protocol, "RequestScores", new Object[]{}));
-			Thread.sleep(500);
-			String score = (String) this.packet.Data.get("ScoreList");
-			System.out.println(score);
-			
-			//create working data
+			connection.SendPacket(new Packet(protocol, "RequestGameState", new Object[]{}));
+			Thread.sleep(1000);
+			String state = (String) this.packet.Data.get("State");
+			Byte b = (Byte) (this.packet.Data.get("Width"));
+			int width = Integer.parseInt(b.toString());
+			Byte c = (Byte) (this.packet.Data.get("Height"));
+			int height = Integer.parseInt(c.toString());
+
+			ConvertToMap map = new ConvertToMap(state, width, height);
 			State stateInfo = new State(map);
-			//reprint their move
+			int animationBarCounter = 0;
+
+
+			MockMover mover = new MockMover(stateInfo); 
+			if(!joinedOrNot){
+				mover.makeMove();
+				sendMove(connection, protocol, stateInfo);
+			}
+			//print the map
 			map.printOutMap(map.getMap(), animationBarCounter);
-			
-			//give the info to the decisions process
-			//State newState = nextMove(stateInfo);
-			//send move to server
-			//sendMove(connection, protocol, newState);
 
-			animationBarCounter++;
-		}
-	}
 
-		private void rePrint(int animationBarCounter, ConvertToMap map){
-			
+
+			//initiate game
+			String temp = JOptionPane.showInputDialog("start the game!");
+
+			boolean firstOnly = false;
+			while(true){
+				if(animationBarCounter == height){
+					animationBarCounter = 0;
+				}
+
+				//loop to wait until we get confirmation
+				boolean loop1 = true;
+				while(loop1 && firstOnly){
+					Thread.sleep(100);
+					if(this.packet.Data.get("Type").equals("Success"))
+						loop1 = false;
+					else if(this.packet.Data.get("Type").equals("Fail")){
+						System.out.println("Our move did not work");
+						System.out.println("Reason being:");
+						System.out.println(this.packet.Data.get("Reason"));
+					}
+
+					if(loop1 == false){
+						//reprint our move
+						map.printOutMap(map.getMap(), animationBarCounter);
+					}
+				}
+
+				firstOnly = true;
+
+				//loop until we get our turn
+				boolean loop=true;
+				while(loop)
+				{
+					Thread.sleep(500);
+					if(this.packet.Data.get("Type").equals("YourTurn"))
+						loop = false;
+					//when game over return and get out
+					else if(this.packet.Data.get("Type").equals("GameOver")){
+						String winner = (String) this.packet.Data.get("Winner");
+						System.out.println("winner is: " + winner);
+
+						//reprint their move
+						System.out.println("reprint");
+						String confirm = JOptionPane.showInputDialog("Do you agree with the outcome?");
+						return;
+					}
+				}
+				//convertToMap
+				state = (String) this.packet.Data.get("State");
+				b = (Byte) (this.packet.Data.get("Width"));
+				width = Integer.parseInt(b.toString());
+				c = (Byte) (this.packet.Data.get("Height"));
+				height = Integer.parseInt(c.toString());
+				map = new ConvertToMap(state, width, height);
+
+				//request game score and display later
+				connection.SendPacket(new Packet(protocol, "RequestScores", new Object[]{}));
+				Thread.sleep(500);
+				String score = (String) this.packet.Data.get("ScoreList");
+				System.out.println(score);
+
+				//create working data
+				stateInfo = new State(map);
+
+				//reprint their move
+				map.printOutMap(map.getMap(), animationBarCounter);
+
+				//give the info to the decisions process
+				//State newState = nextMove(stateInfo);
+				//send move to server
+				mover.reset(stateInfo);
+				mover.makeMove();
+				sendMove(connection, protocol, stateInfo);
+				//sendMove(connection, protocol, newState);
+
+				animationBarCounter++;
+			}
 		}
+
 		public void PacketReceived(Packet packet) {
 			if(packet.Data.get("Type").equals("GameState")){
 				this.packet = packet;
@@ -172,6 +200,8 @@ public class Main implements ConnectionListener {
 			}
 			else if(packet.Data.get("Type").equals("Scores")){
 				this.packet = packet;
+			}else if(packet.Data.get("Type").equals("PlayerList")){
+				this.packet = packet;
 			}
 		}
 
@@ -187,6 +217,7 @@ public class Main implements ConnectionListener {
 					}
 				}
 			}
+			String temp = JOptionPane.showInputDialog("sendingmove");
 			connection.SendPacket(new Packet(protocol, "MakeMove", new Object[]{string}));
 			Thread.currentThread().sleep(1000);
 		}
