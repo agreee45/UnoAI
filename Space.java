@@ -19,7 +19,7 @@ public class Space {
 			//base
 			this.str = " " + charr  + " ";
 		}
-		else if(type == 3){
+		else if(type == 3 || type == 5){
 			//flag
 			this.str = " " + charr  + " ";
 		}

@@ -40,14 +40,15 @@ public class ConvertToMap {
 			if(y == width)
 			{
 				y=0;
-				System.out.println(tempString);
-				tempString = "";
 				x++;
 			}
-			tempString = tempString+ map.charAt(i);
-			if(map.charAt(i) == 'F'){
+			if(map.charAt(i) == 'X'){
 				this.targetFlags.add(new Space(new Coordinate(x, y),3, map.charAt(i)));
 				this.map.get(y).add(this.targetFlags.get(this.targetFlags.size()-1));
+			}
+			else if(map.charAt(i) == 'F'){
+				this.defendFlags.add(new Space(new Coordinate(x, y),5, map.charAt(i)));
+				this.map.get(y).add(this.defendFlags.get(this.defendFlags.size()-1));
 			}
 			else if(map.charAt(i) == 'W'){
 				this.map.get(y).add(new Space(new Coordinate(x, y),1, map.charAt(i)));
@@ -109,6 +110,9 @@ public class ConvertToMap {
 
 	public ArrayList<Space> getTargetFlags(){
 		return this.targetFlags;
+	}
+	public ArrayList<Space> getDefendFlags(){
+		return this.defendFlags;
 	}
 	public Space getBase(){
 		return this.base;
