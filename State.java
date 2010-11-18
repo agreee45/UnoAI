@@ -14,7 +14,7 @@ public class State {
 		this.height = info.getHeight();
 		this.width = info.getWidth();
 		this.map = info.getMap();
-		this.goal = new Goal(info.getFlags(), info.getBase());
+		this.goal = new Goal(info.getTargetFlags(), info.getBase());
 		this.players = info.getPlayers();
 		this.setEnemyPlayers(info.getEnemyPlayers());
 	}

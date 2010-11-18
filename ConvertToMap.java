@@ -26,21 +26,17 @@ public class ConvertToMap {
 			this.map.add(new ArrayList<Space>());
 		}
 		findPOI(map);
-		printOutMap(this.map, 0);
-		while(true){
-
-		}
 	}
 	public void findPOI(String map){
-		int y = 0;
 		int x = 0;
+		int y = 0;
 		String tempString = "";
 
 		for(int i = 0; i < map.length(); i++){
-			if(y == width)
+			if(x == width)
 			{
-				y=0;
-				x++;
+				x=0;
+				y++;
 			}
 			if(map.charAt(i) == 'X'){
 				this.targetFlags.add(new Space(new Coordinate(x, y),3, map.charAt(i)));
@@ -89,7 +85,7 @@ public class ConvertToMap {
 			else{
 				this.map.get(y).add(new Space(new Coordinate(x, y),0, map.charAt(i)));
 			}
-			y++;
+			x++;
 		}
 		for(int i = 0 ; i < 4 ; i++){
 			System.out.println("done");
@@ -129,6 +125,6 @@ public class ConvertToMap {
 				}
 			}
 			System.out.println();
-		}	
+		}
 	}
 }
