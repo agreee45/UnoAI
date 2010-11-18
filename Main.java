@@ -59,9 +59,13 @@ public class Main implements ConnectionListener {
 			gamePlayLoop(protocol, connection, false);
 		}
 		//after game ends code terminates
-		while(true){
 
-		}
+		//request game score and display later
+		connection.SendPacket(new Packet(protocol, "RequestScores", new Object[]{}));
+		Thread.sleep(500);
+		String score = (String) this.packet.Data.get("ScoreList");
+		System.out.println(score);
+
 	}
 
 	private void gamePlayLoop(Protocol protocol, Connection connection, boolean joinedOrNot) throws Exception{
@@ -167,12 +171,6 @@ public class Main implements ConnectionListener {
 			mover.makeMove();
 			sendMove(connection, protocol, stateInfo);
 
-			//request game score and display later
-//			connection.SendPacket(new Packet(protocol, "RequestScores", new Object[]{}));
-//			Thread.sleep(500);
-//			String score = (String) this.packet.Data.get("ScoreList");
-//			System.out.println(score);
-
 			animationBarCounter++;
 
 		}
@@ -224,6 +222,8 @@ public class Main implements ConnectionListener {
 				}
 			}
 		}
+		System.out.println(state.getPlayers().size());
+		System.out.println("whyyyyyyyy!!!");
 		String temp = JOptionPane.showInputDialog("sendingmove");
 		connection.SendPacket(new Packet(protocol, "MakeMove", new Object[]{string}));
 		Thread.currentThread().sleep(1000);

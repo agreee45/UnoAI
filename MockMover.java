@@ -12,6 +12,7 @@ public class MockMover {
 	}
 	public void reset(State state){
 		this.state = state;
+		this.move = new ArrayList<Coordinate>();
 		this.setup();
 	}
 
