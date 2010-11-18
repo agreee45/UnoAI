@@ -46,6 +46,6 @@ public class MockMover {
 		}
 	}
 	private Space getSpaceAtCoordinate(Coordinate coordinate){
-		return this.state.getMap().get(coordinate.getX()).get(coordinate.getY());
+		return this.state.getMap().get(coordinate.getY()).get(coordinate.getX());
 	}
 }
